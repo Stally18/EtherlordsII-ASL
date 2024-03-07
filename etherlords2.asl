@@ -1,7 +1,7 @@
 
 state("ETHERLORDS2", "v1.03")
 {
-	string64 path : 0x005D1B3C;
+	string128 path : 0x005D1B3C;
 	byte IGT : 0x005C43F4;
 	//byte load : 0x005D13D4;
 	//string11 mission : 0x005D1B59;	//obsolete because this would be dependent on the path length
@@ -49,8 +49,8 @@ start
 split
 {
 	// We only want to split when we progress the campaign
-	// so when both the Save happened (save_after_mission) and the mission variable changed
-	if (current.path.Contains("e2mission") && old.path.Contains("Save")
+	// so when both the Save happened (save_after_mission) and the mission variable changed		// this part is for Allcampaign% run
+	if (current.path.Contains("e2mission") && (old.path.Contains("Save") || (vars.mission.Contains("e2mission11") || vars.mission.Contains("e2mission21")))
 		&& vars.mission != vars.oldmission)
 		{
 			// So split wont happen when we quicksave/load (no mission change)
