@@ -37,7 +37,8 @@ start
 {
 	if  ((vars.mission.Contains("e2mission11") || 	// !old.mission.Equals("e2mission11") || 
 		vars.mission.Contains("e2mission21") || 	// !old.mission.Equals("e2mission21") || 
-		vars.mission.Contains("e2mission31")) 		// && !old.mission.Equals("e2mission31"))
+		vars.mission.Contains("e2mission31") ||		// && !old.mission.Equals("e2mission31") ||
+		vars.mission.Contains("e2tutorial"))
 		&&
 		(current.IGT == 3 && old.IGT == 0))
 		{	
