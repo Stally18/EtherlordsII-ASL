@@ -1,10 +1,29 @@
 
-state("ETHERLORDS2", "v1.03")
+state("ETHERLORDS2", "v1.03 (Steam)")
 {
+	// Module size: 8146944, hash FD4D837F33556EA47ADCB669F886278A
+	// Default state
+
 	string128 path : 0x005D1B3C;
 	byte IGT : 0x005C43F4;
 	//byte load : 0x005D13D4;
 	//string11 mission : 0x005D1B59;	//obsolete because this would be dependent on the path length
+}
+
+state("ETHERLORDS2", "v1.01 (GOG)")	
+{
+	// Module size: 4911104, hash FEC7C378B1C2CF545F6A4E7E91B9998
+	
+	string64 path : 0x00445F14;
+	byte IGT : 0x00437EAC;
+}
+
+state("ETHERLORDS2", "v1.00 (retail)")	
+{
+	// Module size: 6135808, hash A5F9E8F389771FE5B99A7971E660B44E
+	
+	string64 path : 0x005BD1FC;
+	byte IGT : 0x005AFF8C;
 }
 
 startup
@@ -14,11 +33,39 @@ startup
 	//settings.Add("nosplit", false, "No split usage");
 	vars.mission = "e2mission00";
 	vars.oldmission = "e2mission00";
+	
+	Func<ProcessModuleWow64Safe, string> CalcModuleHash = (module) => {
+		byte[] exeHashBytes = new byte[0];
+		using (var sha = System.Security.Cryptography.MD5.Create())
+		{
+			using (var s = File.Open(module.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+			{
+				exeHashBytes = sha.ComputeHash(s);
+			}
+		}
+		var hash = exeHashBytes.Select(x => x.ToString("X2")).Aggregate((a, b) => a + b);
+		return hash;
+	};
+	vars.CalcModuleHash = CalcModuleHash;
 }
 
 init
 {
 	//if (timer.IsGameTimePaused == true) timer.IsGameTimePaused = false;
+	var module = modules.Single(x => String.Equals(x.ModuleName, "ETHERLORDS2.exe", StringComparison.OrdinalIgnoreCase));
+	var moduleSize = module.ModuleMemorySize;
+	var hash = vars.CalcModuleHash(module);
+	
+	if (hash == "2FEC7C378B1C2CF545F6A4E7E91B9998")
+	{
+		// Module Size: 4911104
+		version = "v1.01 (GOG)";
+	}
+	else if (hash == "A5F9E8F389771FE5B99A7971E660B44E")
+	{
+		// Module Size: 6135808
+		version = "v1.00 (retail)";
+	}
 }
 
 exit
